@@ -57,8 +57,8 @@ for instructions and the project rubric.
 1. Code must compile without errors with cmake and make.  
    cmake and make were used to compile the project files, without errors or warnings returned.
 
-2. The PID procedure follows what was taught in the lessons. 
-   The PID process does follow the lesson mmaterial.
+2. The PID procedure follows what was taught in the lessons.  
+   The PID process does follow the lesson material.
 
 3. Describe the effect each of the P, I, D components had in your implementation.  
    PID stands for Proportional, Integral, Differential, the three components of providing a smooth and effecting steering model for the car.  The proportional aspect steers the car towards the centerline based on the measured distance between it and the car.  The Integral portion handles offset, either in measurement of mechanical bias.  The Differential portion of the controller smooths out the strength of turning driven by the Proportional term, to reduce the overshooting which that factor alone tends to generate.  
@@ -76,4 +76,4 @@ https://youtu.be/Exx9Bd5fv0Q
 
 ## Conclusion
 
-In order to utilize the PID controllers (in this project, one for throttle and one for steering) centerline data must be available and the vehicle's distance from that error determinable.  Once that is possible, PID controllers are a very simple method for non-nausiating drive control along that center path.  That said, a few additions would likely improve the performance of the PID controller; most obviously averaging out steering to smooth the observed behavior, and looking forward a few time steps to anticipate upcoing curves in the centerline path.
+In order to utilize the PID controllers (in this project, one for throttle and one for steering) centerline data must be available and the vehicle's distance from that error determinable.  Once that is possible, PID controllers are a very simple method for non-nausiating drive control along that center path.  That said, a few additions would likely improve the performance of the PID controller; most obviously averaging out steering to smooth the observed behavior, and looking forward a few time steps to anticipate upcoming curves in the centerline path.
