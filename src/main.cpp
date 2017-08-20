@@ -4,6 +4,9 @@
 #include "PID.h"
 #include <math.h>
 
+//Framework code for main.cpp provided by Udacity 2017
+//Updated for assignment completion by Chris Lawrence (CEL) August 2017 
+
 // for convenience
 using json = nlohmann::json;
 
@@ -31,11 +34,14 @@ std::string hasData(std::string s) {
 int main()
 {
   uWS::Hub h;
+  //CEL: create two instances of the PID controller object, one for throttle, one for steering 
+  PID pids, pidt;
 
-  PID pid;
-  // TODO: Initialize the pid variable.
+  //CEL: initialize the pids with values determined through a random search.  Ran out fo time for twiddle implimentation.
+  pids.Init(0.13211, 0.0001672, 4.043);
+  pidt.Init(0.39145, 0.00001, 0.02012);
 
-  h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+  h.onMessage([&pids,&pidt](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -48,22 +54,32 @@ int main()
         if (event == "telemetry") {
           // j[1] is the data JSON object
           double cte = std::stod(j[1]["cte"].get<std::string>());
-          double speed = std::stod(j[1]["speed"].get<std::string>());
-          double angle = std::stod(j[1]["steering_angle"].get<std::string>());
-          double steer_value;
+          double speed = std::stod(j[1]["speed"].get<std::string>());  //CEL: commented out as not being used directly
+          double angle = std::stod(j[1]["steering_angle"].get<std::string>());  //CEL: commented out as not being used directly
           /*
           * TODO: Calcuate steering value here, remember the steering value is
           * [-1, 1].
           * NOTE: Feel free to play around with the throttle and speed. Maybe use
           * another PID controller to control the speed!
           */
-          
+
+          double steer_value, throttle_value;
+          // update error, calculate new steer_value
+          pids.UpdateError(cte);
+          steer_value = - pids.Kp * pids.p_error - pids.Kd * pids.d_error - pids.Ki * pids.i_error;
+  
+          //DEBUG
+          std::cout << "CTE: " << cte << " Steering Value: " << steer_value << "Current Angle: " << angle << std::endl;
+
+          // update error, calculate new throttle_value
+          pidt.UpdateError(fabs(cte));     
+          throttle_value = 0.75 - pidt.Kp * pidt.p_error - pidt.Kd * pidt.d_error - pidt.Ki * pidt.i_error;          
           // DEBUG
-          std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
+          std::cout << "CTE: " << cte << " Throttle Value: " << throttle_value << "Current Speed: " << speed << std::endl;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = 0.3;
+          msgJson["throttle"] = throttle_value;
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
@@ -101,7 +117,7 @@ int main()
   });
 
   int port = 4567;
-  if (h.listen(port))
+  if (h.listen("0.0.0.0",port))//if (h.listen(port))
   {
     std::cout << "Listening to port " << port << std::endl;
   }

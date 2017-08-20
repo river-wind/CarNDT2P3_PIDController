@@ -1,7 +1,12 @@
-# CarND-Controls-PID
+# PID Controller for Autonomous Vehicle
+[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+
 Self-Driving Car Engineer Nanodegree Program
 
+Overview
 ---
+
+Once more relying on the Udacity simulator, this project uses the PID controller method to drive the simulator's virtual car around Track 1.  The PID controller object has been fleshed out in PID.cpp, relying on provided centerline data to drive the car around the track.  PID stands for Proportional, Integral, Differential, the three components of providing a smooth and effecting steering model for the car.  The proportional aspect steers the car towards the centerline based on the measured distance between it and the car.  The Integral portion handles offset, either in measurement of mechanical bias.  The Differential portion of the controller smooths out the strength of turning driven by the Proportional term, to reduce the overshooting which that factor alone tends to generate.  
 
 ## Dependencies
 
@@ -35,58 +40,40 @@ There's an experimental patch for windows in this [PR](https://github.com/udacit
 3. Compile: `cmake .. && make`
 4. Run it: `./pid`. 
 
-## Editor Settings
-
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
-
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
-
 ## Code Style
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+I've attempted to stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html) in this project..
 
 ## Project Instructions and Rubric
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
+This project's goal was to build a PID controller in C++, using the barebones PID.cpp file as a starting point.  The method closely follows the PID controller design from Sebastian Thrun's Udacity course on the subject, though that was written in Python.
 
 More information is only accessible by people who are already enrolled in Term 2
 of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
 for instructions and the project rubric.
 
-## Hints!
+## Rebric
 
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
+1. Code must compile without errors with cmake and make.
+   cmake and make were used to compile the project files, without errors or warnings returned.
 
-## Call for IDE Profiles Pull Requests
+2. The PID procedure follows what was taught in the lessons.
+   The PID process does follow the lesson mmaterial.
 
-Help your fellow students!
+3. Describe the effect each of the P, I, D components had in your implementation.
+   PID stands for Proportional, Integral, Differential, the three components of providing a smooth and effecting steering model for the car.  The proportional aspect steers the car towards the centerline based on the measured distance between it and the car.  The Integral portion handles offset, either in measurement of mechanical bias.  The Differential portion of the controller smooths out the strength of turning driven by the Proportional term, to reduce the overshooting which that factor alone tends to generate.  
 
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
+4. Describe how the final hyperparameters were chosen.
+   The hyperparameters for both the steering and throttle PID controllers were chosen by trial and error, aka by hand.  The twiddle algorithm is a simple enough process which could determine the best values, and I had planned to impliment that, however I did not have the time to do so.  I intend to return to this project at a later date and implement twiddle.
 
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
+5. The vehicle must successfully drive a lap around the track.
+   See the video below!
 
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
+## Video
 
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
+Video of successful run of the PID controller around the track.
+https://youtu.be/Exx9Bd5fv0Q
 
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
+## Conclusion
 
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
+In order to utilize the PID controllers (in this project, one for throttle and one for steering) centerline data must be available and the vehicle's distance from that error determinable.  Once that is possible, PID controllers are a very simple method for non-nausiating drive control along that center path.  That said, a few additions would likely improve the performance of the PID controller; most obviously averaging out steering to smooth the observed behavior, and looking forward a few time steps to anticipate upcoing curves in the centerline path.
